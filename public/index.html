@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGES STEEL — Ferronnerie &amp; Décoration en fer</title>
+<meta name="description" content="AGES STEEL — Conception et fabrication sur mesure en fer : portails, escaliers, mobilier et décoration. Découvrez notre catalogue de designs.">
+<link rel="icon" type="image/png" href="/logo.png">
+<style>
+  :root {
+    --noir: #161513;
+    --anthracite: #201e1b;
+    --carte: #262421;
+    --bord: #38352f;
+    --or: #c98a3d;
+    --or-clair: #e0a95e;
+    --texte: #ece7df;
+    --texte-doux: #a89f92;
+    --whatsapp: #25d366;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--noir);
+    color: var(--texte);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+  }
+
+  /* ---------- En-tête ---------- */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(22, 21, 19, 0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--bord);
+  }
+  .barre {
+    max-width: 1100px; margin: 0 auto; padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .logo {
+    font-size: 1.25rem; font-weight: 800; letter-spacing: 3px;
+    color: var(--texte); text-decoration: none; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .logo span { color: var(--or); }
+  .logo-image {
+    height: 38px; width: 38px; border-radius: 50%; background: #fff;
+    object-fit: cover; flex-shrink: 0;
+  }
+  .logo-hero {
+    width: min(220px, 55vw); border-radius: 18px; background: #fff;
+    display: block; margin: 0 auto 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  nav { display: flex; gap: 22px; }
+  nav a {
+    color: var(--texte-doux); text-decoration: none; font-size: 0.95rem;
+    transition: color .2s;
+  }
+  nav a:hover { color: var(--or-clair); }
+
+  /* ---------- Héro ---------- */
+  .hero {
+    position: relative; overflow: hidden;
+    padding: 90px 20px 100px; text-align: center;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,138,61,0.12), transparent),
+      var(--anthracite);
+    border-bottom: 1px solid var(--bord);
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 800;
+    letter-spacing: 6px; margin-bottom: 6px;
+  }
+  .hero h1 span { color: var(--or); }
+  .hero .sous-titre {
+    font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--or-clair);
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 22px;
+  }
+  .hero p.pitch {
+    max-width: 560px; margin: 0 auto 34px; color: var(--texte-doux);
+    font-size: 1.05rem;
+  }
+  .bouton-or {
+    display: inline-block; padding: 14px 34px;
+    background: linear-gradient(135deg, var(--or), #a96f2c);
+    color: #1a1206; font-weight: 700; text-decoration: none;
+    border-radius: 8px; letter-spacing: 1px;
+    box-shadow: 0 6px 24px rgba(201,138,61,0.35);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .bouton-or:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,138,61,0.45); }
+
+  /* Motif fer forgé décoratif */
+  .motif {
+    display: flex; justify-content: center; gap: 8px; margin-bottom: 26px;
+    color: var(--or); opacity: 0.7; font-size: 1.3rem; letter-spacing: 8px;
+  }
+
+  /* ---------- Sections ---------- */
+  section { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
+  .titre-section {
+    font-size: 1.7rem; font-weight: 800; letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .titre-section::after {
+    content: ""; display: block; width: 56px; height: 3px;
+    background: var(--or); margin-top: 10px; border-radius: 2px;
+  }
+  .intro-section { color: var(--texte-doux); margin: 14px 0 30px; max-width: 640px; }
+
+  /* ---------- Cartes catégories ---------- */
+  .grille-categories {
+    display: grid; gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  }
+  .carte-categorie {
+    position: relative; border-radius: 14px; overflow: hidden; cursor: pointer;
+    border: 1px solid var(--bord); aspect-ratio: 4/3; background: #1b1a17;
+    transition: transform .18s, border-color .18s, box-shadow .18s;
+  }
+  .carte-categorie:hover {
+    transform: translateY(-4px); border-color: var(--or);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  }
+  .carte-categorie img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .carte-categorie .bandeau {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 30px 16px 14px;
+    background: linear-gradient(transparent, rgba(12,11,9,0.95));
+  }
+  .carte-categorie .nom-cat { font-weight: 800; font-size: 1.15rem; letter-spacing: 1px; }
+  .carte-categorie .compte { font-size: 0.85rem; color: var(--or-clair); }
+
+  /* ---------- Vue d'une catégorie ---------- */
+  .entete-categorie {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 26px;
+  }
+  .bouton-retour {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: 999px; cursor: pointer;
+    background: var(--carte); border: 1px solid var(--bord);
+    color: var(--texte); font-size: 0.95rem; transition: all .2s;
+  }
+  .bouton-retour:hover { border-color: var(--or); color: var(--or-clair); }
+  .titre-categorie { font-size: 1.35rem; font-weight: 800; letter-spacing: 1px; }
+  .titre-categorie span { color: var(--or-clair); font-size: 0.9rem; font-weight: 400; margin-left: 10px; }
+
+  /* ---------- Grille designs ---------- */
+  .grille {
+    display: grid; gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  .carte-design {
+    background: var(--carte); border: 1px solid var(--bord);
+    border-radius: 12px; overflow: hidden; cursor: pointer;
+    transition: transform .18s, border-color .18s, box-shadow .18s;
+  }
+  .carte-design:hover {
+    transform: translateY(-4px); border-color: var(--or);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  }
+  .carte-design .visuel {
+    aspect-ratio: 4/3; width: 100%; overflow: hidden;
+    background: #1b1a17; display: flex; align-items: center; justify-content: center;
+  }
+  .carte-design .visuel img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .carte-design .infos { padding: 14px 16px; }
+  .carte-design .nom { font-weight: 700; font-size: 1rem; }
+  .carte-design .cat {
+    font-size: 0.8rem; color: var(--or-clair); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .badge-3d {
+    display: inline-block; margin-top: 8px; padding: 2px 10px;
+    font-size: 0.72rem; font-weight: 700; border-radius: 999px;
+    background: rgba(201,138,61,0.15); color: var(--or-clair);
+    border: 1px solid rgba(201,138,61,0.4);
+  }
+  .vide {
+    padding: 50px 20px; text-align: center; color: var(--texte-doux);
+    border: 1px dashed var(--bord); border-radius: 12px;
+  }
+
+  /* ---------- Fiche design (fenêtre) ---------- */
+  .voile {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(10,9,8,0.85); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .voile.ouvert { display: flex; }
+  .fiche {
+    background: var(--anthracite); border: 1px solid var(--bord);
+    border-radius: 16px; max-width: 760px; width: 100%;
+    max-height: 92vh; overflow-y: auto;
+  }
+  .fiche .visuel-grand { position: relative; }
+  .fiche .visuel-grand img { width: 100%; display: block; }
+  .fleche {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
+    background: rgba(12,11,9,0.6); color: var(--or-clair); font-size: 1.6rem;
+    display: flex; align-items: center; justify-content: center; z-index: 2;
+  }
+  .fleche:hover { background: var(--or); color: #1a1206; }
+  .fleche.gauche { left: 12px; }
+  .fleche.droite { right: 12px; }
+  .compteur-fiche {
+    position: absolute; bottom: 10px; right: 14px; z-index: 2;
+    background: rgba(12,11,9,0.7); color: var(--or-clair);
+    padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 600;
+  }
+  .fiche .contenu { padding: 22px 24px 26px; }
+  .fiche h3 { font-size: 1.4rem; margin-bottom: 4px; }
+  .fiche .cat { color: var(--or-clair); text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; }
+  .fiche p.note { color: var(--texte-doux); margin: 14px 0 22px; font-size: 0.95rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .bouton-whatsapp,
+  .bloc a.bouton-whatsapp {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 26px; border-radius: 8px; text-decoration: none;
+    background: #1da851; color: #ffffff; font-weight: 600;
+    letter-spacing: 0.3px; border: none;
+    transition: background .15s;
+  }
+  .bouton-whatsapp:hover { background: #22bd5b; }
+  .bouton-carte,
+  .bloc a.bouton-carte {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 24px; border-radius: 8px; text-decoration: none;
+    background: transparent; color: var(--texte); font-weight: 600;
+    letter-spacing: 0.3px; border: 1px solid var(--or);
+    transition: background .15s, color .15s;
+  }
+  .bouton-carte:hover, .bloc a.bouton-carte:hover { background: var(--or); color: #1a1206; }
+  .bouton-fermer {
+    padding: 12px 24px; border-radius: 8px; cursor: pointer;
+    background: transparent; border: 1px solid var(--bord);
+    color: var(--texte-doux); font-size: 1rem;
+  }
+  .bouton-fermer:hover { border-color: var(--or); color: var(--texte); }
+
+  /* ---------- À propos / Contact ---------- */
+  .deux-colonnes {
+    display: grid; gap: 30px; grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 700px) { .deux-colonnes { grid-template-columns: 1fr; } }
+  .bloc {
+    background: var(--carte); border: 1px solid var(--bord);
+    border-radius: 12px; padding: 26px;
+  }
+  .bloc h3 { color: var(--or-clair); margin-bottom: 10px; letter-spacing: 1px; }
+  .bloc p { color: var(--texte-doux); font-size: 0.97rem; }
+  .bloc a { color: var(--or-clair); }
+
+  footer {
+    border-top: 1px solid var(--bord); padding: 26px 20px; text-align: center;
+    color: var(--texte-doux); font-size: 0.88rem;
+  }
+  footer .logo { font-size: 1rem; }
+
+  @media (max-width: 600px) {
+    nav { display: none; }
+    .hero { padding: 60px 16px 70px; }
+    section { padding: 44px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="barre">
+    <a class="logo" href="#"><img class="logo-image" src="/logo.png" alt="Logo AGES STEEL">AGES <span>STEEL</span></a>
+    <nav>
+      <a href="#catalogue">Catalogue</a>
+      <a href="#apropos">À propos</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <img class="logo-hero" src="/logo.png" alt="AGES STEEL">
+  <h1>AGES <span>STEEL</span></h1>
+  <div class="sous-titre">Ferronnerie &amp; Décoration en fer</div>
+  <p class="pitch">
+    Portails, escaliers, mobilier et décoration — chaque pièce est dessinée en 3D
+    par notre ingénieur, puis fabriquée sur mesure dans nos ateliers.
+  </p>
+  <a class="bouton-or" href="#catalogue">Découvrir nos designs</a>
+</div>
+
+<section id="catalogue">
+  <h2 class="titre-section">Notre catalogue</h2>
+  <p class="intro-section">
+    Choisissez une catégorie pour découvrir tous nos designs,
+    conçus en 3D et réalisables sur mesure.
+  </p>
+
+  <!-- Navigation : dossiers et sous-dossiers, comme un explorateur -->
+  <div class="entete-categorie" id="entete-navigation" style="display:none">
+    <button class="bouton-retour" onclick="remonter()">← Retour</button>
+    <div class="titre-categorie" id="titre-categorie"></div>
+  </div>
+  <div class="grille-categories" id="grille-dossiers" style="margin-bottom:22px"></div>
+  <div class="grille" id="grille"></div>
+
+  <div class="vide" id="vide" style="display:none">
+    Le catalogue est en cours de préparation — revenez bientôt !
+  </div>
+</section>
+
+<section id="apropos">
+  <h2 class="titre-section">À propos</h2>
+  <div class="deux-colonnes" style="margin-top:26px">
+    <div class="bloc">
+      <h3>Conception 3D</h3>
+      <p>
+        Chaque création commence par un dessin 3D précis réalisé par notre ingénieur.
+        Vous voyez exactement ce que vous aurez, avant même la fabrication.
+      </p>
+    </div>
+    <div class="bloc">
+      <h3>Fabrication sur mesure</h3>
+      <p>
+        Du portail majestueux au détail décoratif, nous travaillons le fer
+        selon vos dimensions, votre style et votre budget.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2 class="titre-section">Contact</h2>
+  <div class="deux-colonnes" style="margin-top:26px">
+    <div class="bloc">
+      <h3>Demandez un devis</h3>
+      <p>
+        Un design vous plaît ? Contactez-nous sur WhatsApp avec le nom du design,
+        nous vous répondons rapidement avec un devis personnalisé.
+      </p>
+      <p style="margin-top:12px">
+        <a class="bouton-whatsapp" id="whatsapp-general" href="#" target="_blank" rel="noopener">
+          💬 WhatsApp
+        </a>
+      </p>
+    </div>
+    <div class="bloc">
+      <h3>Nous trouver</h3>
+      <p>
+        📍 Libreville — Owendo, avant la Sobraga<br>
+        Gabon
+      </p>
+      <p style="margin-top:14px">
+        <a class="bouton-carte" style="font-size:0.95rem"
+           href="https://maps.app.goo.gl/dPEn3UXV8U3JrNxx9"
+           target="_blank" rel="noopener">📍 Voir sur Google Maps</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo" style="justify-content:center">AGES <span>STEEL</span></div>
+  <div style="margin-top:6px">© 2026 Ages Steel — Ferronnerie &amp; décoration en fer</div>
+</footer>
+
+<!-- Fenêtre fiche design -->
+<div class="voile" id="voile">
+  <div class="fiche">
+    <div class="visuel-grand" id="fiche-visuel">
+      <button class="fleche gauche" id="fleche-gauche" onclick="ficheDefiler(-1)">‹</button>
+      <img id="fiche-image" src="" alt="">
+      <button class="fleche droite" id="fleche-droite" onclick="ficheDefiler(1)">›</button>
+      <span class="compteur-fiche" id="fiche-compteur"></span>
+    </div>
+    <div class="contenu">
+      <div class="cat" id="fiche-cat"></div>
+      <h3 id="fiche-nom"></h3>
+      <p class="note">
+        Ce design est réalisable sur mesure : dimensions, finitions et couleurs adaptées à votre projet.
+      </p>
+      <div class="actions">
+        <a class="bouton-whatsapp" id="fiche-whatsapp" href="#" target="_blank" rel="noopener">
+          💬 Demander un devis
+        </a>
+        <button class="bouton-fermer" onclick="fermerFiche()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ⚙️ À personnaliser : numéro WhatsApp de la société (format international sans +)
+const NUMERO_WHATSAPP = '241000000000';
+
+let catalogue = { categories: [] };
+
+function lienWhatsapp(message) {
+  return 'https://wa.me/' + NUMERO_WHATSAPP + '?text=' + encodeURIComponent(message);
+}
+
+// Pile de navigation : on descend dans les dossiers, on remonte avec « Retour »
+let pile = [];
+
+async function chargerCatalogue() {
+  try {
+    const racine = await (await fetch('/api/catalogue')).json();
+    pile = [{ nom: 'Catalogue', ...racine }];
+  } catch (e) {
+    pile = [{ nom: 'Catalogue', dossiers: [], designs: [], compte: 0 }];
+  }
+  dessiner();
+}
+
+function cheminActuel() {
+  return pile.slice(1).map(n => n.nom).join(' › ');
+}
+
+function dessiner() {
+  const noeud = pile[pile.length - 1];
+
+  // En-tête avec bouton retour (caché à la racine)
+  const entete = document.getElementById('entete-navigation');
+  if (pile.length > 1) {
+    entete.style.display = 'flex';
+    document.getElementById('titre-categorie').innerHTML =
+      cheminActuel() + '<span>' + noeud.compte + ' design' + (noeud.compte > 1 ? 's' : '') + '</span>';
+  } else {
+    entete.style.display = 'none';
+  }
+
+  // Les dossiers (et sous-dossiers) du niveau actuel
+  const grilleDossiers = document.getElementById('grille-dossiers');
+  grilleDossiers.innerHTML = '';
+  for (const d of noeud.dossiers) {
+    const carte = document.createElement('div');
+    carte.className = 'carte-categorie';
+    carte.innerHTML =
+      '<img loading="lazy" src="' + d.couverture + '?taille=vignette" alt="' + d.nom + '">' +
+      '<div class="bandeau">' +
+        '<div class="nom-cat">📁 ' + d.nom + '</div>' +
+        '<div class="compte">' + d.compte + ' design' + (d.compte > 1 ? 's' : '') + ' →</div>' +
+      '</div>';
+    carte.onclick = () => { pile.push(d); dessiner(); defiler(); };
+    grilleDossiers.appendChild(carte);
+  }
+
+  // Les photos du niveau actuel
+  const grille = document.getElementById('grille');
+  grille.innerHTML = '';
+  const etiquette = cheminActuel() || 'Catalogue';
+  const listeDesigns = noeud.designs.map(d => ({ ...d, categorie: etiquette }));
+  listeDesigns.forEach((design, indice) => {
+    const carte = document.createElement('div');
+    carte.className = 'carte-design';
+    carte.innerHTML =
+      '<div class="visuel"><img loading="lazy" src="' + design.image + '?taille=vignette" alt="' + design.nom + '"></div>' +
+      '<div class="infos">' +
+        '<div class="nom">' + design.nom + '</div>' +
+        '<div class="cat">' + etiquette + '</div>' +
+        (design.modele3d ? '<span class="badge-3d">Vue 3D bientôt</span>' : '') +
+      '</div>';
+    carte.onclick = () => ouvrirFiche(listeDesigns, indice);
+    grille.appendChild(carte);
+  });
+
+  document.getElementById('vide').style.display =
+    (noeud.dossiers.length === 0 && noeud.designs.length === 0) ? 'block' : 'none';
+}
+
+function remonter() {
+  if (pile.length > 1) pile.pop();
+  dessiner();
+  defiler();
+}
+
+function defiler() {
+  document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
+}
+
+// La grande vue : on peut faire défiler toutes les photos du dossier
+let ficheListe = [];
+let ficheIndice = 0;
+
+function ouvrirFiche(liste, indice) {
+  ficheListe = liste;
+  ficheIndice = indice;
+  afficherFiche();
+  document.getElementById('voile').classList.add('ouvert');
+}
+
+function afficherFiche() {
+  const d = ficheListe[ficheIndice];
+  document.getElementById('fiche-image').src = d.image + '?taille=grande';
+  document.getElementById('fiche-image').alt = d.nom;
+  document.getElementById('fiche-nom').textContent = d.nom;
+  document.getElementById('fiche-cat').textContent = d.categorie;
+  document.getElementById('fiche-whatsapp').href =
+    lienWhatsapp('Bonjour AGES STEEL 👋 Je suis intéressé par le design « ' + d.nom + ' » (' + d.categorie + '). Pouvez-vous me faire un devis ?');
+
+  const plusieurs = ficheListe.length > 1;
+  document.getElementById('fleche-gauche').style.display = plusieurs ? 'flex' : 'none';
+  document.getElementById('fleche-droite').style.display = plusieurs ? 'flex' : 'none';
+  document.getElementById('fiche-compteur').textContent =
+    plusieurs ? (ficheIndice + 1) + ' / ' + ficheListe.length : '';
+}
+
+function ficheDefiler(sens) {
+  ficheIndice = (ficheIndice + sens + ficheListe.length) % ficheListe.length;
+  afficherFiche();
+}
+
+function fermerFiche() {
+  document.getElementById('voile').classList.remove('ouvert');
+}
+
+document.getElementById('voile').addEventListener('click', (e) => {
+  if (e.target.id === 'voile') fermerFiche();
+});
+
+// Clavier : flèches pour défiler, Échap pour fermer
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') fermerFiche();
+  if (!document.getElementById('voile').classList.contains('ouvert')) return;
+  if (e.key === 'ArrowRight') ficheDefiler(1);
+  if (e.key === 'ArrowLeft') ficheDefiler(-1);
+});
+
+// Téléphone : glisser le doigt sur la photo pour passer à la suivante
+let toucheDepartX = null;
+document.getElementById('fiche-visuel').addEventListener('touchstart', (e) => {
+  toucheDepartX = e.touches[0].clientX;
+}, { passive: true });
+document.getElementById('fiche-visuel').addEventListener('touchend', (e) => {
+  if (toucheDepartX === null) return;
+  const delta = e.changedTouches[0].clientX - toucheDepartX;
+  if (Math.abs(delta) > 50) ficheDefiler(delta < 0 ? 1 : -1);
+  toucheDepartX = null;
+}, { passive: true });
+
+document.getElementById('whatsapp-general').href =
+  lienWhatsapp('Bonjour AGES STEEL 👋 Je souhaite des informations sur vos créations en fer.');
+
+chargerCatalogue();
+</script>
+</body>
+</html>

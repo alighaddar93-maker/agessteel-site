@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGES STEEL — Connexion Dropbox</title>
+<style>
+  :root {
+    --noir: #161513; --carte: #262421; --bord: #38352f;
+    --or: #c98a3d; --or-clair: #e0a95e;
+    --texte: #ece7df; --texte-doux: #a89f92;
+    --vert: #4caf7d; --rouge: #e06c5c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--noir); color: var(--texte);
+    font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;
+    padding: 30px 16px 60px;
+  }
+  .page { max-width: 720px; margin: 0 auto; }
+  h1 { letter-spacing: 2px; margin-bottom: 4px; }
+  h1 span { color: var(--or); }
+  .sous { color: var(--texte-doux); margin-bottom: 26px; }
+  .etape {
+    background: var(--carte); border: 1px solid var(--bord);
+    border-radius: 12px; padding: 22px; margin-bottom: 18px;
+  }
+  .etape h2 {
+    font-size: 1.05rem; color: var(--or-clair); margin-bottom: 12px; letter-spacing: 1px;
+  }
+  .etape ol { padding-left: 22px; color: var(--texte-doux); }
+  .etape li { margin-bottom: 8px; }
+  .etape b, .etape code { color: var(--texte); }
+  code {
+    background: #1b1a17; padding: 2px 8px; border-radius: 6px;
+    border: 1px solid var(--bord); font-size: 0.9em; user-select: all;
+  }
+  a { color: var(--or-clair); }
+  label { display: block; margin: 14px 0 6px; font-weight: 600; }
+  input {
+    width: 100%; padding: 12px 14px; border-radius: 8px;
+    background: #1b1a17; border: 1px solid var(--bord);
+    color: var(--texte); font-size: 1rem;
+  }
+  input:focus { outline: none; border-color: var(--or); }
+  .bouton {
+    margin-top: 18px; padding: 13px 28px; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, var(--or), #a96f2c); color: #1a1206;
+    font-weight: 700; font-size: 1rem; cursor: pointer; letter-spacing: 0.5px;
+  }
+  .bouton:hover { filter: brightness(1.1); }
+  .bouton.secondaire {
+    background: transparent; border: 1px solid var(--bord); color: var(--texte-doux);
+  }
+  .statut {
+    display: flex; align-items: center; gap: 10px; padding: 14px 18px;
+    border-radius: 10px; margin-bottom: 22px; font-weight: 600;
+    background: var(--carte); border: 1px solid var(--bord);
+  }
+  .pastille { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .pastille.vert { background: var(--vert); box-shadow: 0 0 10px var(--vert); }
+  .pastille.orange { background: var(--or); }
+  .pastille.rouge { background: var(--rouge); }
+  .detail { color: var(--texte-doux); font-weight: 400; font-size: 0.9rem; }
+  .message { padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; display: none; }
+  .message.ok { display: block; background: rgba(76,175,125,0.12); border: 1px solid var(--vert); }
+  .message.erreur { display: block; background: rgba(224,108,92,0.12); border: 1px solid var(--rouge); }
+  .retour { display: inline-block; margin-bottom: 20px; color: var(--texte-doux); text-decoration: none; }
+  .retour:hover { color: var(--or-clair); }
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="retour" href="/">← Retour au site</a>
+  <h1>AGES <span>STEEL</span> — Connexion Dropbox</h1>
+  <p class="sous">Brancher le site sur le Dropbox de l'ingénieur (à faire une seule fois, avec lui).</p>
+
+  <div class="statut" id="statut">
+    <span class="pastille orange" id="pastille"></span>
+    <span id="statut-texte">Vérification...</span>
+  </div>
+  <div class="message" id="message"></div>
+
+  <div class="etape">
+    <h2>ÉTAPE 1 — L'ingénieur crée l'application Dropbox (5 minutes)</h2>
+    <ol>
+      <li>Sur son ordinateur, connecté à <b>son</b> compte Dropbox, il ouvre :
+        <a href="https://www.dropbox.com/developers/apps" target="_blank" rel="noopener">dropbox.com/developers/apps</a></li>
+      <li>Bouton <b>« Create app »</b></li>
+      <li>Il choisit : <b>Scoped access</b> → <b>App folder</b> → nom : <code>AgesStyle-Catalogue</code>
+        <br><span style="color:var(--texte-doux)">(« App folder » = le site ne verra QUE ce dossier, jamais le reste de son Dropbox)</span></li>
+      <li>Onglet <b>Permissions</b> : cocher <code>files.metadata.read</code> et <code>files.content.read</code>, puis <b>Submit</b></li>
+      <li>Onglet <b>Settings</b> : dans <b>« Redirect URIs »</b>, coller
+        <code id="uri-retour">http://localhost:4600/dropbox-retour</code> puis <b>Add</b></li>
+      <li>Toujours dans Settings : copier la <b>App key</b> et le <b>App secret</b>
+        (cliquer « Show » pour le secret) → les coller ci-dessous</li>
+    </ol>
+  </div>
+
+  <div class="etape">
+    <h2>ÉTAPE 2 — Coller les clés et connecter</h2>
+    <label for="app_key">App key</label>
+    <input id="app_key" autocomplete="off" placeholder="ex : a1b2c3d4e5f6g7h">
+    <label for="app_secret">App secret</label>
+    <input id="app_secret" autocomplete="off" placeholder="ex : z9y8x7w6v5u4t3s">
+    <br>
+    <button class="bouton" onclick="connecter()">Connecter le Dropbox →</button>
+    <p class="detail" style="margin-top:10px">
+      Dropbox va demander à l'ingénieur d'autoriser l'accès (il doit être connecté à son compte
+      dans ce navigateur). Ensuite, tout est automatique.
+    </p>
+  </div>
+
+  <div class="etape">
+    <h2>ÉTAPE 2 BIS — Si l'ingénieur autorise depuis SON ordinateur (à distance)</h2>
+    <ol>
+      <li>Tu lui envoies le <b>lien d'autorisation</b> (bouton ci-dessous pour le copier)</li>
+      <li>Il l'ouvre, se connecte à son Dropbox, clique <b>Autoriser</b></li>
+      <li>Il verra une page d'erreur <i>« localhost refused to connect »</i> — <b>c'est normal !</b>
+        Le code est dans la barre d'adresse.</li>
+      <li>Il copie <b>l'adresse complète</b> de la barre du navigateur et te l'envoie
+        <b>immédiatement</b> (WhatsApp) — ⚠️ le code expire en quelques minutes</li>
+      <li>Tu la colles ici et tu valides tout de suite :</li>
+    </ol>
+    <button class="bouton secondaire" onclick="copierLien()" id="bouton-lien">📋 Copier le lien d'autorisation à lui envoyer</button>
+    <label for="code-colle">Adresse (ou code) reçue de l'ingénieur</label>
+    <input id="code-colle" autocomplete="off" placeholder="http://localhost:4600/dropbox-retour?code=...">
+    <br>
+    <button class="bouton" onclick="validerCode()">Valider le code →</button>
+  </div>
+
+  <div class="etape">
+    <h2>ÉTAPE 3 — L'ingénieur remplit son dossier</h2>
+    <ol>
+      <li>Un dossier <code>Applications/AgesStyle-Catalogue</code> apparaît dans son Dropbox</li>
+      <li>Dedans, il crée ses catégories : <code>Portails</code>, <code>Escaliers</code>, <code>Tables</code>...</li>
+      <li>Dans chaque catégorie, il met ses photos (bien nommées : <code>portail-royal.jpg</code>)</li>
+      <li>Le site se met à jour <b>tout seul</b> (au maximum 60 secondes après)</li>
+    </ol>
+    <button class="bouton secondaire" onclick="syncMaintenant()">🔄 Synchroniser maintenant</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('uri-retour').textContent =
+  window.location.origin + '/dropbox-retour';
+
+const params = new URLSearchParams(window.location.search);
+const message = document.getElementById('message');
+if (params.get('ok')) {
+  message.className = 'message ok';
+  message.textContent = '✅ Dropbox connecté avec succès ! Le catalogue se synchronise automatiquement.';
+}
+if (params.get('erreur')) {
+  message.className = 'message erreur';
+  message.textContent = '❌ La connexion a échoué (' + params.get('erreur') + '). Vérifiez les clés et le Redirect URI, puis réessayez.';
+}
+
+async function majStatut() {
+  try {
+    const e = await (await fetch('/api/dropbox/etat')).json();
+    const pastille = document.getElementById('pastille');
+    const texte = document.getElementById('statut-texte');
+    if (e.connecte) {
+      pastille.className = 'pastille vert';
+      let detail = e.nbFichiers + ' fichier(s) synchronisé(s)';
+      if (e.nbCouvertures !== undefined && e.nbCouvertures !== null) detail += ' — ' + e.nbCouvertures + ' couverture(s) taguée(s)';
+      if (e.derniereSync) detail += ' — dernière sync : ' + new Date(e.derniereSync).toLocaleTimeString('fr-FR');
+      if (e.erreur) { pastille.className = 'pastille rouge'; detail = 'Erreur : ' + e.erreur; }
+      texte.innerHTML = 'Dropbox <b>connecté</b> <span class="detail">— ' + detail + '</span>';
+    } else if (e.clesEnregistrees) {
+      pastille.className = 'pastille orange';
+      texte.innerHTML = 'Clés enregistrées — <b>autorisation Dropbox à faire</b> (étape 2)';
+    } else {
+      pastille.className = 'pastille orange';
+      texte.innerHTML = 'Pas encore connecté <span class="detail">— le site utilise le catalogue local</span>';
+    }
+  } catch (err) {
+    document.getElementById('statut-texte').textContent = 'Serveur injoignable';
+  }
+}
+majStatut();
+setInterval(majStatut, 5000);
+
+async function connecter() {
+  const app_key = document.getElementById('app_key').value.trim();
+  const app_secret = document.getElementById('app_secret').value.trim();
+  if (!app_key || !app_secret) { alert('Colle la App key et le App secret d\'abord.'); return; }
+  const rep = await fetch('/api/dropbox/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ app_key, app_secret }),
+  });
+  const d = await rep.json();
+  if (d.erreur) { alert(d.erreur); return; }
+  window.location.href = d.url; // → page d'autorisation Dropbox
+}
+
+async function copierLien() {
+  const app_key = document.getElementById('app_key').value.trim();
+  let cle = app_key;
+  if (!cle) {
+    cle = prompt('Colle la App key de l\'app Dropbox (visible dans Settings) :');
+    if (!cle) return;
+    document.getElementById('app_key').value = cle;
+  }
+  const lien = 'https://www.dropbox.com/oauth2/authorize?client_id=' + encodeURIComponent(cle.trim())
+    + '&response_type=code&token_access_type=offline'
+    + '&redirect_uri=' + encodeURIComponent(window.location.origin + '/dropbox-retour');
+  try {
+    await navigator.clipboard.writeText(lien);
+    document.getElementById('bouton-lien').textContent = '✅ Lien copié — envoie-le à l\'ingénieur';
+  } catch (e) {
+    prompt('Copie ce lien et envoie-le à l\'ingénieur :', lien);
+  }
+}
+
+async function validerCode() {
+  const code = document.getElementById('code-colle').value.trim();
+  if (!code) { alert('Colle d\'abord l\'adresse ou le code reçu de l\'ingénieur.'); return; }
+  const rep = await fetch('/api/dropbox/code', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code }),
+  });
+  const d = await rep.json();
+  if (d.erreur) {
+    alert('❌ Échec : ' + d.erreur + '\n\nLe code n\'est valable que quelques minutes et une seule fois. Demande à l\'ingénieur de refaire l\'autorisation (rouvrir le lien) et renvoie le nouveau code tout de suite.');
+  } else {
+    message.className = 'message ok';
+    message.textContent = '✅ Dropbox connecté avec succès ! ' + (d.nbFichiers || 0) + ' fichier(s) synchronisé(s).';
+    majStatut();
+  }
+}
+
+async function syncMaintenant() {
+  const e = await (await fetch('/api/dropbox/sync', { method: 'POST' })).json();
+  majStatut();
+  if (e.erreur) alert('Erreur de synchronisation : ' + e.erreur);
+  else alert('Synchronisation faite : ' + e.nbFichiers + ' fichier(s).');
+}
+</script>
+</body>
+</html>

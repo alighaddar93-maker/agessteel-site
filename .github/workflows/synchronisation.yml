@@ -1,0 +1,51 @@
+# AGES STEEL — Le robot de synchronisation
+# Toutes les 30 minutes : lit le Dropbox de l'ingénieur, fabrique les photos
+# filigranées manquantes, met à jour le site. Netlify publie ensuite tout seul.
+
+name: Synchronisation Dropbox
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch: {}   # bouton « lancer maintenant » dans l'onglet Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: synchronisation
+  cancel-in-progress: false
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le site
+        uses: actions/checkout@v4
+
+      - name: Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Installer les outils (sharp)
+        run: npm ci
+
+      - name: Fabriquer le site depuis le Dropbox
+        env:
+          DROPBOX_APP_KEY: ${{ secrets.DROPBOX_APP_KEY }}
+          DROPBOX_APP_SECRET: ${{ secrets.DROPBOX_APP_SECRET }}
+          DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
+        run: node construire-site.js
+
+      - name: Publier les changements
+        run: |
+          git config user.name "Robot AGES STEEL"
+          git config user.email "robot@agessteel.local"
+          git add -A site
+          if git diff --cached --quiet; then
+            echo "Aucun changement — rien à publier."
+          else
+            git commit -m "sync: mise à jour du catalogue depuis Dropbox"
+            git push
+          fi

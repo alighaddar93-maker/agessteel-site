@@ -1,0 +1,13 @@
+# Secrets — ne JAMAIS partager ni publier
+dropbox-config.json
+
+# Généré / local uniquement
+dropbox-etat.json
+couvertures.json
+catalogue-dropbox/
+cache-images/
+tmp-originaux/
+node_modules/
+catalogue/
+demarrer-site.vbs
+logo.png

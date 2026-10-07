@@ -1,0 +1,17 @@
+{
+  "name": "agessteel-site",
+  "version": "1.0.0",
+  "description": "Site catalogue AGES STEEL — ferronnerie, synchronisé avec le Dropbox de l’ingénieur",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "construire": "node construire-site.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "sharp": "^0.35.3"
+  }
+}
