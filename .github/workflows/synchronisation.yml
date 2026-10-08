@@ -6,7 +6,9 @@ name: Synchronisation Dropbox
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    # minutes « creuses » (7, 27, 47) : GitHub saute souvent les réveils
+    # aux heures rondes (:00/:30) car trop de robots s'y réveillent en même temps
+    - cron: '7,27,47 * * * *'
   workflow_dispatch: {}   # bouton « lancer maintenant » dans l'onglet Actions
 
 permissions:
