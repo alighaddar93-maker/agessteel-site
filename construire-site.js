@@ -45,16 +45,109 @@ try {
     }));
 } catch (e) { /* pas de dictionnaire → pas de traduction */ }
 
-function traduire(texte) {
+function traduireDico(texte) {
   let resultat = texte;
   for (const t of entreesTraduction) resultat = resultat.replace(t.regex, t.francais);
-  return resultat.charAt(0).toUpperCase() + resultat.slice(1);
+  return resultat;
+}
+
+// ---------- Traduction AUTOMATIQUE des mots inconnus ----------
+// Si le dictionnaire du métier ne suffit pas, le robot demande la traduction
+// à Google (gratuit) UNE SEULE FOIS, puis la mémorise dans traductions-auto.json.
+// Plus jamais besoin d'ajouter les mots à la main.
+const FICHIER_TRAD_AUTO = path.join(SITE, 'traductions-auto.json');
+let cacheAuto = {};
+try { cacheAuto = JSON.parse(fs.readFileSync(FICHIER_TRAD_AUTO, 'utf8')); } catch (e) {}
+
+// Codes internes de l'ingénieur et mots identiques dans les deux langues :
+// inutile de les envoyer au traducteur
+const MOTS_NEUTRES = new Set(['smu', 'abb', 'tuc', 'dxf', 'villa', 'table', 'simple', 'double', 'pergola', 'design', 'divers']);
+
+const traductionsPretes = {}; // phrase nettoyée (minuscules) → traduction finale
+
+function nettoyerPhrase(nom) {
+  return nom.replace(/^!+|!+$/g, '').replace(/[-_]+/g, ' ')
+    .replace(/\s*\(\d+\)\s*$/, '').replace(/\s+/g, ' ').trim();
+}
+
+function resteDeLAnglais(original, traduit) {
+  const motsOrigine = new Set((original.toLowerCase().match(/[a-z]{3,}/g) || []));
+  const motsTraduits = (traduit.toLowerCase().match(/[a-z]{3,}/g) || []);
+  return motsTraduits.some((m) => motsOrigine.has(m) && !MOTS_NEUTRES.has(m));
+}
+
+async function traduireAvecGoogle(texte) {
+  // sl=auto : si le texte est déjà en français, il revient tel quel
+  const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=fr&dt=t&q='
+    + encodeURIComponent(texte);
+  const rep = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+  if (!rep.ok) throw new Error('Google indisponible (' + rep.status + ')');
+  const donnees = await rep.json();
+  const trad = (donnees[0] || []).map((x) => x[0]).join('').trim();
+  if (!trad) throw new Error('réponse vide');
+  return trad;
+}
+
+// Traducteur de secours (gratuit, 5000 caractères/jour) si Google refuse
+async function traduireAvecMyMemory(texte) {
+  const url = 'https://api.mymemory.translated.net/get?langpair=en%7Cfr&q=' + encodeURIComponent(texte);
+  const rep = await fetch(url);
+  if (!rep.ok) throw new Error('MyMemory indisponible (' + rep.status + ')');
+  const donnees = await rep.json();
+  const trad = (donnees.responseData && donnees.responseData.translatedText || '').trim();
+  if (!trad || /MYMEMORY/i.test(trad)) throw new Error('quota MyMemory atteint');
+  return trad;
+}
+
+async function traduireEnLigne(texte) {
+  try { return await traduireAvecGoogle(texte); }
+  catch (e) { return await traduireAvecMyMemory(texte); }
+}
+
+const pause = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Prépare la traduction de toutes les phrases du catalogue (avant construction)
+async function preparerTraductions(phrases) {
+  let nouvelles = 0;
+  for (const phrase of phrases) {
+    const cle = phrase.toLowerCase();
+    if (traductionsPretes[cle]) continue;
+
+    const parDico = traduireDico(phrase);
+    if (!resteDeLAnglais(phrase, parDico)) {
+      traductionsPretes[cle] = parDico; // le dictionnaire du métier a tout traduit
+      continue;
+    }
+    if (!cacheAuto[cle]) {
+      try {
+        await pause(400); // politesse envers les traducteurs gratuits
+        cacheAuto[cle] = await traduireEnLigne(phrase);
+        nouvelles++;
+        console.log('  🌍 traduit automatiquement : « ' + phrase + ' » → « ' + cacheAuto[cle] + ' »');
+      } catch (e) {
+        console.log('  ⚠ traduction auto impossible pour « ' + phrase + ' » : ' + e.message);
+        traductionsPretes[cle] = parDico; // secours : au moins le dictionnaire
+        continue;
+      }
+    }
+    traductionsPretes[cle] = cacheAuto[cle];
+  }
+  if (nouvelles > 0) fs.writeFileSync(FICHIER_TRAD_AUTO, JSON.stringify(cacheAuto, null, 1));
+}
+
+function majuscule(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
+
+function traduire(nom) {
+  const phrase = nettoyerPhrase(nom);
+  const trad = traductionsPretes[phrase.toLowerCase()] || traduireDico(phrase);
+  return majuscule(trad);
 }
 
 function joliNom(nomFichier) {
   const sansExt = nomFichier.replace(path.extname(nomFichier), '');
-  const mots = sansExt.replace(/^!+|!+$/g, '').replace(/[-_]+/g, ' ').trim();
-  return traduire(mots);
+  const numero = (sansExt.match(/\(\d+\)\s*$/) || [''])[0]; // on garde le (001)
+  const traduit = traduire(sansExt);
+  return (traduit + ' ' + numero).trim();
 }
 
 // ---------- Filigrane AGES STEEL (identique au site local) ----------
@@ -206,6 +299,17 @@ async function principal() {
     distant[rel] = { hash: e.content_hash, cheminApi: e.path_lower, nomFichier: e.name };
   }
   console.log('— ' + Object.keys(distant).length + ' photos dans le Dropbox');
+
+  // Traduction : on prépare TOUTES les phrases (dossiers + noms de photos),
+  // y compris les mots nouveaux, traduits automatiquement et mémorisés
+  const phrases = new Set();
+  for (const rel of Object.keys(distant)) {
+    const segments = rel.split('/');
+    const fichier = segments.pop();
+    for (const s of segments) phrases.add(nettoyerPhrase(s));
+    phrases.add(nettoyerPhrase(fichier.replace(path.extname(fichier), '')));
+  }
+  await preparerTraductions(phrases);
 
   // 2. Quoi transformer ? (nouveau, modifié, ou sortie manquante)
   let ancien = {};
