@@ -80,7 +80,7 @@ function chargerTraductions() {
         // Les expressions longues d'abord : « swing door » gagne sur « door »
         .sort((a, b) => b[0].length - a[0].length)
         .map(([anglais, francais]) => ({
-          regex: new RegExp('\\b' + anglais.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi'),
+          regex: new RegExp('\\b' + anglais.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ +/g, '\\s+') + '\\b', 'gi'),
           francais,
         }));
       cacheTraductions = { date, entrees };

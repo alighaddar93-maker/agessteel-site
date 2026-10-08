@@ -40,7 +40,7 @@ try {
     .filter(([cle]) => !cle.startsWith('_'))
     .sort((a, b) => b[0].length - a[0].length)
     .map(([anglais, francais]) => ({
-      regex: new RegExp('\\b' + anglais.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi'),
+      regex: new RegExp('\\b' + anglais.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ +/g, '\\s+') + '\\b', 'gi'),
       francais,
     }));
 } catch (e) { /* pas de dictionnaire → pas de traduction */ }
