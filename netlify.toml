@@ -1,0 +1,9 @@
+# AGES STEEL — configuration Netlify
+# Le site publié est le dossier ./site (fabriqué par le robot GitHub).
+# La fonction "reveil" sonne GitHub toutes les 30 min (réveil de secours).
+
+[build]
+  publish = "site"
+
+[functions]
+  directory = "netlify/functions"
