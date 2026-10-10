@@ -12,3 +12,6 @@ catalogue/
 demarrer-site.vbs
 /logo.png
 demo-show/
+maquette-scroll/
+*.mp4
+.DS_Store

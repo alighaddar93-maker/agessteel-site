@@ -270,10 +270,139 @@
     .hero { padding: 60px 16px 70px; }
     section { padding: 44px 16px; }
   }
+
+  /* ========== MAQUETTE : thème CLAIR + film continu en 4 chapitres ========== */
+  :root {
+    --noir: #f6f5f2; --anthracite: #ffffff; --carte: #ffffff;
+    --bord: #e5e0d6; --texte: #211d17; --texte-doux: #7b7465;
+    --or: #b8792f; --or-clair: #9a6526;
+  }
+  header { display: none; }
+  .hero { background: #ffffff; border-bottom: 1px solid var(--bord); }
+  .carte-categorie { background: #eceae4; border-color: var(--bord); }
+  .carte-categorie .nom-cat { color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+  .carte-categorie .compte { color: #e8b26a; text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
+  .carte-design .visuel { background: #f0ede7; }
+  .bouton-fermer { color: #5d564a; }
+
+  .mq-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 998;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 22px; background: rgba(255,255,255,0.96);
+    box-shadow: 0 1px 14px rgba(0,0,0,0.09); backdrop-filter: blur(8px); }
+  .mq-nav-logo { display: flex; align-items: center; gap: 10px;
+    font-weight: 800; letter-spacing: 2px; color: #211d17; font-size: 1rem; }
+  .mq-nav-logo b { color: #b8792f; }
+  .mq-nav-logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover;
+    border: 1px solid #eee; background: #fff; }
+  .mq-nav-liens { display: flex; align-items: center; gap: clamp(10px, 3vw, 26px); }
+  .mq-nav-lien { color: #3c362c; text-decoration: none; font-weight: 600;
+    font-size: 0.92rem; letter-spacing: 0.3px; transition: color .2s; white-space: nowrap; }
+  .mq-nav-lien:hover { color: #b8792f; }
+  .mq-nav-btn { padding: 10px 26px; border-radius: 999px; text-decoration: none;
+    background: #b8792f; color: #fff; font-weight: 700; font-size: 0.92rem; }
+  .mq-nav-btn:hover { background: #9a6526; }
+  .mq-badge { position: fixed; bottom: 12px; left: 12px; z-index: 999;
+    background: #7a2020; color: #fff; font-size: 0.68rem; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 999px; opacity: 0.9; }
+  @media (max-width: 480px) { .mq-nav-lien { font-size: 0.8rem; } .mq-nav-logo { font-size: 0.85rem; } }
+
+  /* --- LE FILM CONTINU : un seul écran épinglé, 4 couches en fondu enchaîné --- */
+  section.mq-film { max-width: none; width: 100%; padding: 0; margin: 60px 0 0;
+    height: 1280vh; position: relative; background: #ffffff; }
+  .mq-colle { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+  .mq-couche { position: absolute; inset: 0; opacity: 0; will-change: opacity; }
+  .mq-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .mq-couche[data-cote="gauche"] .mq-canvas { transform: translateX(13%) scale(1.05);
+    -webkit-mask-image: radial-gradient(ellipse 62% 74% at 60% 50%, #000 48%, transparent 78%);
+    mask-image: radial-gradient(ellipse 62% 74% at 60% 50%, #000 48%, transparent 78%); }
+  .mq-couche[data-cote="droite"] .mq-canvas { transform: translateX(-13%) scale(1.05);
+    -webkit-mask-image: radial-gradient(ellipse 62% 74% at 40% 50%, #000 48%, transparent 78%);
+    mask-image: radial-gradient(ellipse 62% 74% at 40% 50%, #000 48%, transparent 78%); }
+  .mq-couche[data-cote="centre"] .mq-canvas {
+    -webkit-mask-image: radial-gradient(ellipse 80% 74% at 50% 45%, #000 52%, transparent 82%);
+    mask-image: radial-gradient(ellipse 80% 74% at 50% 45%, #000 52%, transparent 82%); }
+  .mq-voile { position: absolute; inset: 0; pointer-events: none; }
+  .mq-couche[data-cote="gauche"] .mq-voile { background:
+    linear-gradient(90deg, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.55) 26%, transparent 48%),
+    radial-gradient(ellipse 85% 75% at 58% 50%, transparent 55%, rgba(255,255,255,0.9) 100%); }
+  .mq-couche[data-cote="droite"] .mq-voile { background:
+    linear-gradient(270deg, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.55) 26%, transparent 48%),
+    radial-gradient(ellipse 85% 75% at 42% 50%, transparent 55%, rgba(255,255,255,0.9) 100%); }
+  .mq-couche[data-cote="centre"] .mq-voile { background:
+    linear-gradient(180deg, transparent 45%, rgba(255,255,255,0.88) 85%),
+    radial-gradient(ellipse 90% 80% at 50% 45%, transparent 55%, rgba(255,255,255,0.9) 100%); }
+
+  .mq-texte { position: absolute; top: 50%; transform: translateY(-50%);
+    width: min(42vw, 540px); color: #1d1b17;
+    font-size: clamp(1.7rem, 4.4vw, 3.4rem); font-weight: 900; letter-spacing: -0.5px;
+    line-height: 1.08; opacity: 0; }
+  .mq-couche[data-cote="gauche"] .mq-texte { left: 6vw; text-align: left; }
+  .mq-couche[data-cote="droite"] .mq-texte { right: 6vw; text-align: right; }
+  .mq-couche[data-cote="centre"] .mq-texte { left: 50%; top: auto; bottom: 10vh;
+    transform: translateX(-50%); width: min(90vw, 760px); text-align: center; }
+  .mq-texte .mq-or { color: #b8792f; }
+  .mq-texte .mq-sous { display: block; font-size: 0.42em; font-weight: 600;
+    color: #7b7465; letter-spacing: 1px; margin-top: 12px; line-height: 1.4; }
+  .mq-btn-final { display: inline-block; margin-top: 22px; padding: 14px 38px;
+    border-radius: 999px; background: #b8792f; color: #fff; font-weight: 700;
+    font-size: 1.05rem; text-decoration: none; letter-spacing: 0.5px; }
+  .mq-chargement { position: absolute; left: 50%; bottom: 60px; transform: translateX(-50%);
+    color: #b8792f; font-size: 0.85rem; letter-spacing: 2px; z-index: 5; }
+  .mq-fleche { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
+    color: #a89f92; animation: mq-flotte 2s ease-in-out infinite; font-size: 0.85rem; z-index: 5; }
+  @keyframes mq-flotte { 50% { transform: translateX(-50%) translateY(7px); } }
+
+  @media (max-width: 740px) {
+    .mq-couche .mq-canvas { transform: none !important;
+      -webkit-mask-image: radial-gradient(ellipse 85% 70% at 50% 42%, #000 50%, transparent 82%) !important;
+      mask-image: radial-gradient(ellipse 85% 70% at 50% 42%, #000 50%, transparent 82%) !important; }
+    .mq-couche .mq-voile { background:
+      linear-gradient(180deg, transparent 50%, rgba(255,255,255,0.85) 88%),
+      radial-gradient(ellipse 90% 75% at 50% 42%, transparent 55%, rgba(255,255,255,0.9) 100%) !important; }
+    .mq-texte { left: 50% !important; right: auto !important; top: auto !important; bottom: 10vh !important;
+      transform: translateX(-50%) !important; width: 90vw !important; text-align: center !important;
+      font-size: clamp(1.4rem, 6.5vw, 2.1rem) !important; }
+  }
+  .mq-separateur { background: #241f16; color: #e0a95e; text-align: center;
+    padding: 14px; font-size: 0.85rem; letter-spacing: 1px; }
 </style>
 </head>
 <body>
-
+<div class="mq-nav">
+  <div class="mq-nav-logo"><img src="logo.png" alt="AGES STEEL">AGES&nbsp;<b>STEEL</b></div>
+  <div class="mq-nav-liens">
+    <a class="mq-nav-lien" href="#contact">Contact</a>
+    <a class="mq-nav-lien" href="https://maps.app.goo.gl/dPEn3UXV8U3JrNxx9" target="_blank" rel="noopener">📍 Localisation</a>
+    <a class="mq-nav-btn" href="#catalogue">Catalogue</a>
+  </div>
+</div>
+<section class="mq-film" id="mq-film">
+  <div class="mq-colle">
+    <div class="mq-couche" data-cote="gauche" data-clip="clip1">
+      <canvas class="mq-canvas"></canvas>
+      <div class="mq-voile"></div>
+      <div class="mq-texte mq-ouverture" style="opacity:1">AGES <span class="mq-or">STEEL</span>.<br>L'art de l'acier.<span class="mq-sous">Nous sommes venus tout changer. En mieux.</span></div>
+      <div class="mq-texte">Découpe <span class="mq-or">de précision</span><span class="mq-sous">Chaque pièce naît d'un dessin 3D, taillée au millimètre.</span></div>
+    </div>
+    <div class="mq-couche" data-cote="droite" data-clip="clip2">
+      <canvas class="mq-canvas"></canvas>
+      <div class="mq-voile"></div>
+      <div class="mq-texte">Soudé par <span class="mq-or">les nôtres</span><span class="mq-sous">Soudure MIG — la force et la précision, dans nos ateliers d'Owendo.</span></div>
+    </div>
+    <div class="mq-couche" data-cote="gauche" data-clip="clip3">
+      <canvas class="mq-canvas"></canvas>
+      <div class="mq-voile"></div>
+      <div class="mq-texte">Une finition <span class="mq-or">qui dure</span><span class="mq-sous">Powder coating — une peinture cuite, résistante au climat du Gabon.</span></div>
+    </div>
+    <div class="mq-couche" data-cote="centre" data-clip="clip4">
+      <canvas class="mq-canvas"></canvas>
+      <div class="mq-voile"></div>
+      <div class="mq-texte">Signé <span class="mq-or">dans l'acier.</span><span class="mq-sous">AGES STEEL — nous forgeons ce que vous imaginez.</span><br><a class="mq-btn-final" href="#catalogue">Découvrir le catalogue →</a></div>
+    </div>
+    <div class="mq-chargement" id="mq-chargement">Chargement du film… 0%</div>
+    <div class="mq-fleche">▼ faites défiler</div>
+  </div>
+</section>
 <header>
   <div class="barre">
     <a class="logo" href="#"><img class="logo-image" src="logo.png" alt="Logo AGES STEEL">AGES <span>STEEL</span></a>
@@ -549,6 +678,129 @@ document.getElementById('whatsapp-general').href =
   lienWhatsapp('Bonjour AGES STEEL 👋 Je souhaite des informations sur vos créations en fer.');
 
 chargerCatalogue();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var NB = 120;
+  var FONDU = 0.012; // durée du fondu enchaîné entre deux films (en fraction du scroll total)
+  var film = document.getElementById('mq-film');
+  var chargement = document.getElementById('mq-chargement');
+  var couches = [];
+  var totalCharge = 0;
+
+  document.querySelectorAll('.mq-couche').forEach(function (el) {
+    var canvas = el.querySelector('.mq-canvas');
+    couches.push({ el: el, canvas: canvas, ctx: canvas.getContext('2d'),
+      clip: el.dataset.clip, images: [], frame: 0,
+      texte: el.querySelector('.mq-texte:not(.mq-ouverture)'),
+      ouverture: el.querySelector('.mq-ouverture') });
+  });
+  var totalImages = couches.length * NB;
+
+  function urlFrame(clip, i) { return 'frames/' + clip + '/img_' + String(i + 1).padStart(3, '0') + '.webp'; }
+
+  function chargerCouche(idx) {
+    if (idx >= couches.length) return;
+    var c = couches[idx], restes = NB;
+    for (var i = 0; i < NB; i++) {
+      (function (i) {
+        var im = new Image();
+        im.onload = im.onerror = function () {
+          totalCharge++; restes--;
+          chargement.textContent = 'Chargement du film… ' + Math.round(totalCharge / totalImages * 100) + '%';
+          if (totalCharge >= totalImages) chargement.style.display = 'none';
+          if (i === 0) dessiner(c, 0);
+          if (restes === 0) { if (window.ScrollTrigger) ScrollTrigger.refresh(); chargerCouche(idx + 1); }
+        };
+        im.src = urlFrame(c.clip, i);
+        c.images.push(im);
+      })(i);
+    }
+  }
+  chargerCouche(0);
+
+  function dessiner(c, i) {
+    var im = c.images[i];
+    if (!im || !im.complete || !im.naturalWidth) return;
+    var cw = c.canvas.width, chh = c.canvas.height;
+    if (!cw || !chh) return;
+    var e = Math.max(cw / im.naturalWidth, chh / im.naturalHeight);
+    var lw = im.naturalWidth * e, lh = im.naturalHeight * e;
+    c.ctx.clearRect(0, 0, cw, chh);
+    c.ctx.drawImage(im, (cw - lw) / 2, (chh - lh) / 2, lw, lh);
+  }
+
+  function redimensionner() {
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    couches.forEach(function (c) {
+      c.canvas.width = Math.round(c.canvas.clientWidth * dpr);
+      c.canvas.height = Math.round(c.canvas.clientHeight * dpr);
+      dessiner(c, c.frame);
+    });
+  }
+  window.addEventListener('resize', redimensionner);
+
+  function fenetre(p, debut, fin, marge) {
+    if (p <= debut || p >= fin) return 0;
+    if (p < debut + marge) return (p - debut) / marge;
+    if (p > fin - marge) return (fin - p) / marge;
+    return 1;
+  }
+
+  // p global (0 → 1) : chaque film occupe un quart, fondu enchaîné aux frontières
+  function surProgression(p) {
+    var n = couches.length;
+    for (var i = 0; i < n; i++) {
+      var debut = i / n, fin = (i + 1) / n;
+      var c = couches[i];
+      // opacité de la couche : pleine dans son quart, fondue aux bords (sauf 1re entrée / dernière sortie)
+      var o;
+      if (p < debut - FONDU) o = 0;
+      else if (p < debut + FONDU) o = i === 0 ? 1 : (p - (debut - FONDU)) / (2 * FONDU);
+      else if (p < fin - FONDU) o = 1;
+      else if (p < fin + FONDU) o = i === n - 1 ? 1 : 1 - (p - (fin - FONDU)) / (2 * FONDU);
+      else o = 0;
+      if (i === n - 1 && p >= fin - FONDU) o = 1;
+      c.el.style.opacity = Math.max(0, Math.min(1, o));
+
+      // le film avance dans son quart
+      var local = Math.max(0, Math.min(1, (p - debut) / (fin - debut)));
+      var frame = Math.min(NB - 1, Math.round(local * (NB - 1)));
+      if (frame !== c.frame || o > 0) { c.frame = frame; if (o > 0) dessiner(c, frame); }
+
+      // le texte dans son quart
+      var estFinal = c.el.dataset.cote === 'centre';
+      c.texte.style.opacity = estFinal ? fenetre(local, 0.2, 1.3, 0.18) : fenetre(local, 0.14, 0.92, 0.18);
+      // le texte d'ouverture : visible au départ, s'efface dès les premiers centimètres de scroll
+      if (c.ouverture) c.ouverture.style.opacity = Math.max(0, 1 - local / 0.09);
+    }
+  }
+
+  function progressionManuelle() {
+    var r = film.getBoundingClientRect();
+    var total = film.offsetHeight - window.innerHeight;
+    return Math.min(1, Math.max(0, -r.top / total));
+  }
+
+  redimensionner();
+  surProgression(0);
+
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.create({
+      trigger: '#mq-film', start: 'top top', end: 'bottom bottom', scrub: 0.25,
+      onUpdate: function (st) { surProgression(st.progress); },
+    });
+    window.addEventListener('load', function () { setTimeout(function () { ScrollTrigger.refresh(); }, 300); });
+  } else {
+    window.addEventListener('scroll', function () {
+      requestAnimationFrame(function () { surProgression(progressionManuelle()); });
+    }, { passive: true });
+  }
+})();
 </script>
 </body>
 </html>
