@@ -1657,7 +1657,6 @@
  "Windows/Window tu/Window tu (005)!.png": "fe45a2180c7e8fcaf15583efe9400ecb7a4d58e95edac9be7fe3d0c1e1f4bf56",
  "Balconies/Balcony tu/Balcony tu (011).png": "17314624682c4a7b99d05af9ec0ca6f6100e23897720ebb7a00c509ca6075ad1",
  "Indoor stairs/Stairs (001).png": "287d8d53335cb37292934790c83655abd5b29b56fc8398164093b1721d47b721",
- "Indoor stairs/Stairs (3).jpg": "b05187c0aac608146d0f74954daa61254cd4115414448438a8893512c1c225be",
  "Indoor stairs/Stairs (005).png": "6851b7ac7dcd3910db307cc5fd031a10e14c9c186a75a08a6df5b115e4a7cfef",
  "Indoor stairs/Stairs (008).png": "f86662f959845d4f7a505e1f7818b85f9565ec5b9d0602611afcf52dc729366c",
  "Indoor stairs/Stairs (006)!.png": "a7880f015b3947903642efa67cfeac30a529cbfeb071db40785e2b772fd98c6d",
@@ -1673,5 +1672,6 @@
  "Divers/Chair/Chair (004).jpg": "68ce4d764b5bf52447666a4409ec2c2ae8dd94c4dc143c532360ceb568c9f6b3",
  "Divers/Table sets/Table set (009).jpg": "bb46ea0598e02cf07a49062789270bc5334045975bccd99c6df1ee95d680138c",
  "Divers/Chair/Chair (005).jpg": "7a3ece6a2b9dcf739baf8bee3bf49c008858982f954e86e8925a69ff4e803b67",
- "Divers/Chair/Chair (006).jpg": "b7b55bf8c94587d1978caec115eab79bdb6241b37f25964866363a98dc6a2abf"
+ "Divers/Chair/Chair (006).jpg": "b7b55bf8c94587d1978caec115eab79bdb6241b37f25964866363a98dc6a2abf",
+ "Indoor stairs/Stairs (003).jpg": "b05187c0aac608146d0f74954daa61254cd4115414448438a8893512c1c225be"
 }
