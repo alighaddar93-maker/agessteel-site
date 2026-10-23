@@ -1,6 +1,7 @@
 # AGES STEEL — Le robot de synchronisation
 # Toutes les 30 minutes : lit le Dropbox de l'ingénieur, fabrique les photos
-# filigranées manquantes, met à jour le site. Netlify publie ensuite tout seul.
+# filigranées manquantes, met à jour le site, puis GitHub Pages le publie
+# (gratuit et illimité — Netlify avait un quota mensuel qui bloquait tout).
 
 name: Synchronisation Dropbox
 
@@ -9,10 +10,17 @@ on:
     # minutes « creuses » (7, 27, 47) : GitHub saute souvent les réveils
     # aux heures rondes (:00/:30) car trop de robots s'y réveillent en même temps
     - cron: '7,27,47 * * * *'
-  workflow_dispatch: {}   # bouton « lancer maintenant » dans l'onglet Actions
+  workflow_dispatch:
+    inputs:
+      deployer:
+        description: 'Publier sur GitHub Pages même sans changement'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: synchronisation
@@ -21,6 +29,8 @@ concurrency:
 jobs:
   construire:
     runs-on: ubuntu-latest
+    outputs:
+      modifie: ${{ steps.publication.outputs.modifie }}
     steps:
       - name: Récupérer le site
         uses: actions/checkout@v4
@@ -41,13 +51,43 @@ jobs:
         run: node construire-site.js
 
       - name: Publier les changements
+        id: publication
         run: |
           git config user.name "Robot AGES STEEL"
           git config user.email "robot@agessteel.local"
           git add -A site
           if git diff --cached --quiet; then
             echo "Aucun changement — rien à publier."
+            echo "modifie=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "sync: mise à jour du catalogue depuis Dropbox"
             git push
+            echo "modifie=true" >> "$GITHUB_OUTPUT"
           fi
+
+  # Mise en ligne sur GitHub Pages : seulement quand quelque chose a changé
+  # (ou quand on force avec le bouton « deployer »)
+  mettre-en-ligne:
+    needs: construire
+    if: needs.construire.outputs.modifie == 'true' || inputs.deployer == true
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Récupérer la dernière version
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Préparer Pages
+        uses: actions/configure-pages@v4
+
+      - name: Empaqueter le site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Mettre en ligne
+        id: deploiement
+        uses: actions/deploy-pages@v4
